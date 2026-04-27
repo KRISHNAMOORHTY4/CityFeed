@@ -6,25 +6,25 @@ class BottonNavbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  BottomAppBar(
+    return BottomAppBar(
       color: Colors.white,
-    shape: CircularNotchedRectangle(),
-    notchMargin: 8.0,
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Icon(Icons.home,color: AppColors.primary,),
-        Icon(Icons.search),
-        Icon(Icons.videocam_off_outlined),
-        SizedBox(width: 20,),
-        Icon(Icons.play_circle_outline),
-        Icon(Icons.notifications),
-        Icon(Icons.person),
-        
-      ],
-    ),
-  );
-
- 
+      shape: CircularNotchedRectangle(),
+      notchMargin: 8.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(Icons.home, color: AppColors.primary),
+          ),
+          IconButton(onPressed: () {}, icon: Icon(Icons.search)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.videocam_off_outlined)),
+          SizedBox(width: 30),
+          IconButton(onPressed: () {}, icon: Icon(Icons.play_circle_outline)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.notifications)),
+          IconButton(onPressed: () {}, icon: Icon(Icons.person)),
+        ],
+      ),
+    );
   }
 }

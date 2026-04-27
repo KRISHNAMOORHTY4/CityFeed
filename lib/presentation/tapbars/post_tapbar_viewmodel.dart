@@ -8,6 +8,8 @@ import 'package:flutter_riverpod/legacy.dart';
 
 final skipProvider = StateProvider<int>((_) => 0);
 
+final loadMoreLoader = StateProvider<bool>((_) => false);
+
 final tapbarRepoProvider = Provider<PostTapbarRepository>((ref) {
   return PostTapbarRepository(apiService: ApiService());
 });
@@ -28,6 +30,34 @@ class PostTapbarViewmodel extends AsyncNotifier<List<PostTapbarModel>> {
     state = await AsyncValue.guard(() {
       return service.getApiData(skipData: skipData);
     });
+  }
+
+  Future<void> loadMore() async {
+    ref.read(loadMoreLoader.notifier).state = true;
+    final currentSkip = ref.read(skipProvider);
+
+  
+    ref.read(skipProvider.notifier).state = currentSkip + 3;
+
+    final service = ref.read(tapbarRepoProvider);
+    final newSkip = ref.read(skipProvider);
+
+  
+    final oldData = state.value ?? [];
+
+   
+    final newData = await AsyncValue.guard(
+      () => service.getApiData(skipData: newSkip),
+    );
+
+
+    if (newData.hasValue) {
+      state = AsyncData([...oldData, ...newData.value!]);
+      ref.read(loadMoreLoader.notifier).state = false;
+    } else if (newData.hasError) {
+      state = AsyncError(newData.error!, newData.stackTrace!);
+      ref.read(loadMoreLoader.notifier).state = false;
+    }
   }
 }
 

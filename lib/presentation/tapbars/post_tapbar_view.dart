@@ -1,4 +1,5 @@
 import 'package:city_feed/core/constants/app_colors.dart';
+import 'package:city_feed/core/utils/screen_utils.dart';
 import 'package:city_feed/presentation/tapbars/post_tapbar_viewmodel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,18 +14,30 @@ class PostTapbarView extends ConsumerWidget {
     final postTapbarAsyncProviderRead = ref.read(
       postTapbarAsyncProvider.notifier,
     );
+    final loadMoreLoaderUi = ref.watch(loadMoreLoader);
+    final ScrollController _scrollController = ScrollController();
+
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 200) {
+        postTapbarAsyncProviderRead.loadMore();
+      }
+    });
     Widget customActionIcons({required IconData icon, required subTitle}) {
       return Row(
         children: [
-          Icon(icon, size: 16, color: Colors.grey.shade400),
-          SizedBox(width: 4),
+          Icon(icon, size: ScreenUtils.isMopile(context) ? 16 : 19, color: Colors.grey.shade400),
+          SizedBox(width: ScreenUtils.screenWidth(context)/98.23),
           Text(
             "$subTitle",
-            style: TextStyle(color: Colors.grey.shade700, fontSize: 12),
+            style: TextStyle(color: Colors.grey.shade700, fontSize: ScreenUtils.isMopile(context) ? 12 : 14),
           ),
         ],
       );
     }
+
+    print("width :${ScreenUtils.screenWidth(context)}");
+     print("height :${ScreenUtils.screenHeight(context)}");
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -34,13 +47,14 @@ class PostTapbarView extends ConsumerWidget {
       child: postTapbarAsyncProviderUi.when(
         data: (data) {
           return ListView.builder(
-              physics: const AlwaysScrollableScrollPhysics(),
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
             itemCount: data.length,
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+            padding: EdgeInsets.symmetric(horizontal: ScreenUtils.screenWidth(context)/19.636, vertical: ScreenUtils.screenHeight(context)/55.03),
             itemBuilder: (context, index) {
               final currentData = data[index];
               return Padding(
-                padding: EdgeInsets.symmetric(vertical: 10),
+                padding: EdgeInsets.symmetric(vertical: ScreenUtils.screenHeight(context)/82.545),
                 child: Column(
                   children: [
                     Row(
@@ -49,22 +63,26 @@ class PostTapbarView extends ConsumerWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            CircleAvatar(),
-                            SizedBox(width: 15),
+                            CircleAvatar(
+                              radius: 25,
+                              backgroundColor: Colors.grey.shade300,
+                              backgroundImage: NetworkImage(currentData.imageurl),
+                            ),
+                            SizedBox(width: ScreenUtils.screenWidth(context)/26.18133333333333),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   currentData.name,
                                   style: TextStyle(
-                                    fontSize: 17,
+                                    fontSize: ScreenUtils.isMopile(context) ? 17 : 19,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
                                 Text(
                                   "krishna",
                                   style: TextStyle(
-                                    fontSize: 13,
+                                    fontSize: ScreenUtils.isMopile(context) ? 13 : 15,
                                     color: Colors.grey.shade500,
                                   ),
                                 ),
@@ -73,13 +91,13 @@ class PostTapbarView extends ConsumerWidget {
                                   children: [
                                     Icon(
                                       Icons.location_pin,
-                                      size: 15,
+                                      size:  ScreenUtils.isMopile(context) ? 15 : 17,
                                       color: Colors.grey.shade500,
                                     ),
                                     Text(
                                       "Mumbai ,india",
                                       style: TextStyle(
-                                        fontSize: 13,
+                                        fontSize:  ScreenUtils.isMopile(context) ? 13 : 15,
                                         color: Colors.grey.shade500,
                                       ),
                                     ),
@@ -103,9 +121,9 @@ class PostTapbarView extends ConsumerWidget {
                         decorationColor: AppColors.primary,
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: ScreenUtils.screenHeight(context)/82.545),
                     Container(
-                      height: 200,
+                      height: ScreenUtils.screenHeight(context)/ 4.12725,
                       width: MediaQuery.of(context).size.width,
 
                       child: ClipRRect(
@@ -161,6 +179,18 @@ class PostTapbarView extends ConsumerWidget {
                         ],
                       ),
                     ),
+                    if (loadMoreLoaderUi && data.length == index + 1)
+                      Center(
+                        child: Column(
+                          children: [
+                            SizedBox(height: ScreenUtils.screenHeight(context)/ 27.515),
+                            CircularProgressIndicator(
+                              backgroundColor: Colors.white,
+                              color: AppColors.primary,
+                            ),
+                          ],
+                        ),
+                      ),
                   ],
                 ),
               );
