@@ -23,9 +23,14 @@ class PostTapbarViewmodel extends AsyncNotifier<List<PostTapbarModel>> {
   }
 
   Future<void> refreshData() async {
-    ref.read(skipProvider.notifier).state += 10;
+   final skipData= ref.read(skipProvider);
+   if(skipData>100){
+     ref.read(skipProvider.notifier).state=0;
+   }else{
+     ref.read(skipProvider.notifier).state +=10;
+   }
     final service = ref.read(tapbarRepoProvider);
-    final skipData = ref.read(skipProvider);
+
     state = const AsyncLoading();
     state = await AsyncValue.guard(() {
       return service.getApiData(skipData: skipData);
@@ -36,8 +41,13 @@ class PostTapbarViewmodel extends AsyncNotifier<List<PostTapbarModel>> {
     ref.read(loadMoreLoader.notifier).state = true;
     final currentSkip = ref.read(skipProvider);
 
-  
-    ref.read(skipProvider.notifier).state = currentSkip + 3;
+    final skipData= ref.read(skipProvider);
+    if(skipData>100){
+      ref.read(skipProvider.notifier).state=10;
+    }else{
+      ref.read(skipProvider.notifier).state=currentSkip + 3;
+    }
+
 
     final service = ref.read(tapbarRepoProvider);
     final newSkip = ref.read(skipProvider);

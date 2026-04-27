@@ -5,6 +5,7 @@ import 'package:city_feed/presentation/home/home_viewmodel.dart';
 import 'package:city_feed/presentation/tapbars/post_tapbar_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomeView extends ConsumerStatefulWidget {
   const HomeView({super.key});
@@ -53,7 +54,7 @@ class _HomeViewState extends ConsumerState<HomeView> {
                 SizedBox(width: ScreenUtils.screenWidth(context) / 98.18),
                 cityAsync.when(
                   data: (city) => Text(city ?? "Unknown"),
-                  loading: () => CircularProgressIndicator(),
+                  loading: () => Text("Loading..."),
                   error: (e, s) => Text("Error"),
                 ),
               ],

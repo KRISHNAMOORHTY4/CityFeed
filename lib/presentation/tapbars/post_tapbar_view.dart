@@ -41,8 +41,8 @@ class PostTapbarView extends ConsumerWidget {
 
     return RefreshIndicator(
       onRefresh: () async {
-        // await postTapbarAsyncProviderRead.refreshData();
-        print("Karna");
+        await postTapbarAsyncProviderRead.refreshData();
+
       },
       child: postTapbarAsyncProviderUi.when(
         data: (data) {
